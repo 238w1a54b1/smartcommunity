@@ -1,1 +1,1 @@
-web: gunicorn smartcommunity.wsgi
+web: gunicorn smartcommunity.wsgi:application
