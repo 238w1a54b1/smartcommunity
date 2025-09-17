@@ -6,30 +6,67 @@
     <title>Neon - AI-Powered Community</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #f7f8fb;
+            --card: rgba(255,255,255,0.85);
+            --border: rgba(15,23,42,0.08);
+            --text: #0f172a;
+            --muted: #6b7280;
+            --accent1: #3b82f6;
+            --accent2: #8b5cf6;
+            --accent3: #14b8a6;
+        }
+        .dark {
+            --bg: #0f172a;
+            --card: rgba(15,23,42,0.7);
+            --border: rgba(255,255,255,0.08);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+        .glass {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+        }
+        .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+        .btn-brand { background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
+        .btn-brand:hover { filter: brightness(1.05); transform: translateY(-1px); }
+        .fade-in { animation: fade .3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+        .like-btn { transition: all .2s ease; }
+        .like-btn:hover { transform: scale(1.1); }
+        .like-btn.liked { animation: heartBeat .3s ease; }
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .save-btn { transition: all .2s ease; }
+        .save-btn:hover { transform: scale(1.1); }
+        .save-btn.saved { animation: bounce .3s ease; }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .comment-btn { transition: all .2s ease; }
+        .comment-btn:hover { transform: scale(1.05); }
+        .notification-enter { animation: slideInRight .3s ease; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .notification-exit { animation: slideOutRight .3s ease; }
+        @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        .thread-card { transition: all .3s ease; }
+        .thread-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.1); }
+        .gradient-text { background: linear-gradient(90deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    </style>
+    
     <link rel="stylesheet" href="static/index.css">
     
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        playfair: ['Playfair Display', 'serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], playfair: ['Playfair Display', 'serif'], },
                     colors: {
-                        primary: {
-                            start: '#3B82F6',
-                            middle: '#6366F1',
-                            end: '#8B5CF6',
-                        },
-                        secondary: {
-                            start: '#22D3EE',
-                            end: '#0EA5E9',
-                        },
-                        accent: {
-                            neon: '#00FFAA',
-                            purple: '#A855F7',
-                        }
+                        primary: { start: '#3B82F6', middle: '#6366F1', end: '#8B5CF6' },
+                        secondary: { start: '#22D3EE', end: '#0EA5E9' },
+                        accent: { neon: '#00FFAA', purple: '#A855F7' }
                     },
                     boxShadow: {
                         glass: '0 4px 30px rgba(0, 0, 0, 0.1)',
@@ -42,8 +79,8 @@
     </script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen font-sans transition-colors duration-300">
-    <!-- Navigation -->
-    <nav class="bg-glass border-b border-gray-200 dark:border-gray-800 backdrop-blur-lg fixed w-full z-50">
+
+    <nav class="bg-gray-50/90 dark:bg-gray-900/90 border-b border-gray-200 dark:border-gray-800 backdrop-blur-lg fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
@@ -52,49 +89,51 @@
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Home</a>
-                            <a href="{% url 'explore' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Explore</a>
-                            <a href="{% url 'newthreads' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">New Thread</a>
-                            <a href="{% url 'leaderboard' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Leaderboard</a>
+                            <a href="#" class="px-3 py-2 rounded-md text-sm font-semibold text-primary-middle" aria-current="page">Home</a>
+                            <a href="{% url 'explore' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800">Explore</a>
+                            <a href="{% url 'newthreads' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800">New Thread</a>
+                            <a href="{% url 'leaderboard' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800">Leaderboard</a>
                         </div>
                     </div>
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-4 flex items-center md:ml-6">
-                        <button class="p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        <button class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none">
                             <span class="sr-only">View notifications</span>
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                         </button>
                         <div class="ml-3 relative">
-                            <div>
-                                <a  href="{% url 'view_profile' %}" class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu">
-                                    <span class="sr-only">Open user menu</span>
-                                    <img class="h-8 w-8 rounded-full" src="{{ user.profile.profile_image.url }}" alt="User profile picture showing a young professional with glasses standing in front of a blurred cityscape background">
-                                </a>
-                            </div>
+                            <a href="{% url 'view_profile' %}" class="max-w-xs bg-gray-800 rounded-full flex items-center text-sm ring-2 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 ring-transparent hover:ring-primary-middle focus:outline-none">
+                                <span class="sr-only">Open user menu</span>
+                                <img class="h-8 w-8 rounded-full" src="{{ user.profile.profile_image.url }}" alt="User profile">
+                            </a>
                         </div>
-                        <button class="ml-4 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700" id="theme-toggle">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
+                        <button class="ml-4 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800" id="theme-toggle">
+                            <span class="sr-only">Toggle theme</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                         </button>
                     </div>
                 </div>
                 <div class="-mr-2 flex md:hidden">
-                    <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none">
                         <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
                     </button>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="bg-gray-200 dark:bg-gray-800 text-primary-middle block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Home</a>
+                <a href="{% url 'explore' %}" class="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium">Explore</a>
+                <a href="{% url 'newthreads' %}" class="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium">New Thread</a>
+                <a href="{% url 'leaderboard' %}" class="text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 block px-3 py-2 rounded-md text-base font-medium">Leaderboard</a>
+            </div>
+        </div>
+    </nav>
+    
+
     <div class="pt-24 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
@@ -109,45 +148,22 @@
                     </p>
                     <div class="mt-10 sm:flex sm:justify-start">
                         <div class="rounded-md shadow">
-                            <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-primary-start to-primary-end hover:from-primary-middle hover:to-primary-end transition-all duration-300 md:py-4 md:text-lg md:px-10 group">
+                            <a href="newthreads" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-primary-start to-primary-end hover:from-primary-middle hover:to-primary-end transition-all duration-300 md:py-4 md:text-lg md:px-10 group">
                                 Get Started
-                                <svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                </svg>
-                            </a>
-                        </div>
-                        <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-                            <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-start bg-white dark:bg-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors md:py-4 md:text-lg md:px-10">
-                                Learn More
+                                <svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="relative">
                     <div class="relative mx-auto w-full rounded-xl overflow-hidden">
-                        <img class="w-full h-auto rounded-xl shadow-2xl" src="/media/profile_photos/landing-comm.png" alt="Diverse group of professionals collaborating on a digital project in a modern workspace with laptops and tablets">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div class="absolute bottom-6 left-6 right-6">
-                            <div class="bg-glass rounded-lg p-4 shadow-lg backdrop-blur-sm">
-                                <h3 class="text-lg font-bold text-white">Featured Discussion</h3>
-                                <p class="text-white/90">How AI is transforming creative collaboration</p>
-                                <div class="mt-2 flex items-center">
-                                    <div class="flex -space-x-1">
-                                        <img class="w-6 h-6 rounded-full border-2 border-white" src="https://placehold.co/100" alt="User profile thumbnail of a smiling woman with curly hair">
-                                        <img class="w-6 h-6 rounded-full border-2 border-white" src="https://placehold.co/100" alt="User profile thumbnail of a bearded man with glasses">
-                                        <img class="w-6 h-6 rounded-full border-2 border-white" src="https://placehold.co/100" alt="User profile thumbnail of a young professional in a blue shirt">
-                                    </div>
-                                    <span class="ml-2 text-sm text-white">+12 others discussing</span>
-                                </div>
-                            </div>
+                        <img class="w-full h-auto rounded-xl shadow-2xl" src="/media/profile_photos/landing-comm.png" alt="Collaboration image">
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Forum Dashboard -->
     <div class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:flex lg:items-center lg:justify-between mb-12">
@@ -159,300 +175,171 @@
                         Explore the latest topics, share your thoughts, and collaborate with peers.
                     </p>
                 </div>
-                <div class="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <input type="text" name="search" id="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-middle focus:border-primary-middle sm:text-sm" placeholder="Search discussions">
-                    </div>
-                    <a href="{% url 'newthreads' %}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-primary-start to-primary-middle hover:from-primary-middle hover:to-primary-end transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-middle">
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
+                <div class="mt-6 flex sm:justify-end">
+                     <a href="{% url 'newthreads' %}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-primary-start to-primary-middle hover:from-primary-middle hover:to-primary-end transition-all duration-300">
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
                         New Discussion
                     </a>
                 </div>
             </div>
 
             <div class="flex flex-col lg:flex-row gap-8">
-
-
-                <!-- Main Content -->
                 <div class="flex-1">
-                    <!-- Featured Thread -->
-                    <div class="relative mb-10 card-hover">
-                        <div class="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-r from-secondary-start to-secondary-end rounded-t-xl"></div>
-                        <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                            <div class="px-6 py-5 sm:p-6">
+                    
+                    <div id="threadsContainer" class="space-y-6">
+                        {% for th in latest_threads %}
+                        <div class="glass rounded-2xl p-5 sm:p-6 thread-card fade-in" data-thread-id="{{ th.id }}">
+                            
+                            {% if th.summary %}
+                            <div class="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-lg border-l-4 border-purple-400">
                                 <div class="flex items-start">
                                     <div class="flex-shrink-0">
-                                        <img class="h-10 w-10 rounded-full" src="https://placehold.co/100" alt="Profile picture of a female tech entrepreneur with short brown hair">
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="flex items-center">
-                                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Sarah Johnson</h3>
-                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-accent-neon/10 text-accent-neon">
-                                                Verified
-                                            </span>
-                                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">3h ago</span>
-                                        </div>
-                                        <h2 class="mt-1 text-xl font-bold text-gray-900 dark:text-white">The Future of AI-Powered Collaboration Tools</h2>
-                                        <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                            <p>Exploring how next-gen AI tools are transforming the way teams collaborate remotely. From intelligent meeting summaries to real-time sentiment analysis, these technologies promise to make distributed work more productive and humane.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-4 flex flex-wrap gap-2">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                        AI/ML
-                                    </span>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                        Future of Work
-                                    </span>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                        Remote Collaboration
-                                    </span>
-                                </div>
-                                <div class="mt-4 flex items-center justify-between">
-                                    <div class="flex space-x-5">
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-primary-start">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                                </svg>
-                                                <span>24</span>
-                                            </button>
-                                        </span>
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-red-500">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                </svg>
-                                                <span>42</span>
-                                            </button>
-                                        </span>
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-green-500">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                                </svg>
-                                                <span>5</span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                    <div class="flex">
-                                        <button class="text-sm font-medium text-primary-middle hover:text-primary-end">
-                                            Read more →
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 dark:bg-gray-700/50 px-6 py-4">
-                                <div class="flex justify-between items-center">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="relative">
-                                            <img class="h-8 w-8 rounded-full" src="https://placehold.co/100" alt="Small profile avatar of a male software engineer with glasses">
-                                            <span class="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-gray-800 bg-accent-neon"></span>
-                                        </div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-300">
-                                            <span class="font-medium">Michael Chen</span> and <span class="font-medium">3 others</span> are currently viewing
-                                        </p>
-                                    </div>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-purple/10 text-accent-purple">
-                                        Trending
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- AI Summary Card -->
-                    <div class="relative mb-8">
-                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-xl p-5 shadow-lg">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-accent-purple to-accent-neon flex items-center justify-center text-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg class="h-5 w-5 text-purple-600 dark:text-purple-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10a1 1 0 01-1.64 0l-7-10A1 1 0 014 7h4V2a1 1 0 011-1h2.3z" clip-rule="evenodd" />
                                         </svg>
                                     </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">AI-Generated Summary</h3>
-                                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                        <p>Based on recent activity in this category, discussions are trending toward AI-assisted collaboration tools, with 22% more engagement than last week. Popular topics include real-time translation, automated meeting notes, and emotional tone analysis in communication.</p>
+                                    <div class="ml-3">
+                                        <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wide">AI Summary</p>
+                                        <p class="text-sm text-gray-700 dark:text-gray-200 mt-1">{{ th.summary }}</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                            {% endif %}
+                            <div class="flex items-start gap-4">
+                                <a href="#"><img src="{{ th.author.profile.profile_image.url }}" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg" /></a>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div>
+                                            <div class="font-semibold text-lg" style="color: var(--text);">{{ th.author.get_full_name|default:th.author.username }}</div>
+                                            <div class="text-sm opacity-60" style="color: var(--muted);">{{ th.created_at|timesince }} ago</div>
+                                        </div>
+                                    </div>
 
-                    <!-- Thread List -->
-                    <div class="space-y-6">
-                        {% for th in latest_threads %}
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md card-hover overflow-hidden">
-                            <div class="p-6">
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0">
-                                        <img class="h-10 w-10 rounded-full object-cover" src="{{ th.author.profile.profile_image.url }}" alt="{{ th.author.username }} avatar">
+                                    {% if th.title %}<h2 class="text-xl font-bold mb-3 leading-tight" style="color: var(--text);">{{ th.title }}</h2>{% endif %}
+                                    <div class="text-[16px] leading-relaxed mb-4" style="color: var(--text);">{{ th.content|truncatewords:50 }}</div>
+                                    {% if th.image %}<div class="my-4 rounded-2xl overflow-hidden shadow-lg"><img src="{{ th.image.url }}" class="w-full h-auto object-cover" alt="thread image" /></div>{% endif %}
+
+                                    {% if th.tags.all %}
+                                    <div class="mb-4 flex flex-wrap gap-2">
+                                        {% for tag in th.tags.all %}<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">#{{ tag.name }}</span>{% endfor %}
                                     </div>
-                                    <div class="ml-4 flex-1 min-w-0">
-                                        <div class="flex items-center gap-2">
-                                            <h3 class="text-base font-bold text-gray-900 dark:text-white truncate">{{ th.author.get_full_name|default:th.author.username }}</h3>
-                                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ th.created_at|timesince }} ago</span>
-                                        </div>
-                                        {% if th.title %}
-                                        <h2 class="mt-1 text-lg font-bold text-gray-900 dark:text-white">{{ th.title }}</h2>
-                                        {% endif %}
-                                        {% if th.summary %}
-                                        <div class="mt-1 text-sm text-gray-700 dark:text-gray-200 font-medium">{{ th.summary }}</div>
-                                        {% endif %}
-                                        <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                            <p>{{ th.content|truncatewords:50 }}</p>
-                                        </div>
-                                        {% if th.image %}
-                                        <div class="mt-3 rounded-xl overflow-hidden">
-                                            <img src="{{ th.image.url }}" class="w-full h-auto object-cover" alt="image">
-                                        </div>
-                                        {% endif %}
-                                        {% if th.link %}
-                                        <div class="mt-3">
-                                            <a href="{{ th.link }}" target="_blank" class="underline opacity-80 hover:opacity-100">{{ th.link }}</a>
-                                        </div>
-                                        {% endif %}
-                                        <div class="mt-4 flex flex-wrap gap-2">
-                                            {% for tag in th.tags.all %}
-                                            <a href="{% url 'tag_threads' tag.name %}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">#{{ tag.name }}</a>
-                                            {% endfor %}
-                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex items-center gap-6 text-sm" style="color: var(--muted);">
+                                        <button onclick="toggleLike({{ th.id }}, this)" class="like-btn flex items-center gap-2 hover:opacity-100 transition-all {% if request.user in th.likes.all %}text-red-500 liked{% endif %}">
+                                            <svg class="w-5 h-5" fill="{% if request.user in th.likes.all %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                            <span class="like-count font-medium">{{ th.like_count }}</span>
+                                        </button>
+                                        <button onclick="window.location.href='{% url 'newthreads' %}#thread-{{th.id}}'" class="comment-btn flex items-center gap-2 hover:opacity-100 transition-all">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03 8 9-8s9 3.582 9 8z"/></svg>
+                                            <span class="font-medium comment-count">{{ th.comment_count }}</span>
+                                        </button>
+                                        <button onclick="toggleSave({{ th.id }}, this)" class="save-btn flex items-center gap-2 hover:opacity-100 transition-all {% if request.user in th.saves.all %}text-yellow-500 saved{% endif %}">
+                                            <svg class="w-5 h-5" fill="{% if request.user in th.saves.all %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                                            <span class="font-medium">Save</span>
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="mt-4 flex items-center justify-between">
-                                    <div class="flex space-x-5 text-sm">
-                                        <span class="inline-flex items-center gap-1 opacity-80">
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                                            <span>{{ th.comment_count }}</span>
-                                        </span>
-                                        <span class="inline-flex items-center gap-1 opacity-80">
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                                            <span>{{ th.like_count }}</span>
-                                        </span>
-                                    </div>
-                                    <a href="{% url 'newthreads' %}" class="text-sm font-medium text-primary-middle hover:text-primary-end">Join discussion →</a>
                                 </div>
                             </div>
                         </div>
                         {% empty %}
-                        <div class="opacity-70">No threads yet. Be the first to post!</div>
+                        <div class="glass rounded-2xl p-6 text-center opacity-80">No threads yet. Be the first to start a discussion!</div>
                         {% endfor %}
-                        <!-- Thread Item 1 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md card-hover overflow-hidden">
-                            <div class="p-6">
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0">
-                                        <img class="h-10 w-10 rounded-full" src="https://placehold.co/100" alt="Profile picture of a young male developer with curly hair">
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="flex items-center">
-                                            <h3 class="text-base font-bold text-gray-900 dark:text-white">David Park</h3>
-                                            <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">5h ago</span>
-                                        </div>
-                                        <h2 class="mt-1 text-lg font-bold text-gray-900 dark:text-white">Implementing AI summarization in React/Next.js apps</h2>
-                                        <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                            <p>Just released a new open-source package that makes it super easy to integrate AI summarization into any React or Next.js application using the OpenAI API. The package handles all the edge cases and provides beautiful UI components...</p>
-                                        </div>
-                                        <div class="mt-4 flex flex-wrap gap-2">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                React
-                                            </span>
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                Next.js
-                                            </span>
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                OpenAI
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-4 flex items-center justify-between">
-                                    <div class="flex space-x-5">
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-primary-start">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                                </svg>
-                                                <span>12</span>
-                                            </button>
-                                        </span>
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-red-500">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                </svg>
-                                                <span>28</span>
-                                            </button>
-                                        </span>
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-green-500">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                                </svg>
-                                                <span>3</span>
-                                            </button>
-                                        </span>
-                                    </div>
-                                    <div class="flex">
-                                        <button class="text-sm font-medium text-primary-middle hover:text-primary-end">
-                                            Read more →
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <!-- Thread Item 2 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md card-hover overflow-hidden">
-                            <div class="p-6">
-                                <div class="flex items-start">
-                                    <div class="flex-shrink-0">
-                                        <img class="h-10 w-10 rounded-full" src="https://placehold.co/100" alt="Profile picture of a female UX designer with blonde hair and a stylish outfit">
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="flex items-center">
-                                            <h3 class="text-base font-bold text-gray-900 dark:text-white">Emma Rodriguez</h3>
-                                            <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">7h ago</span>
-                                        </div>
-                                        <h2 class="mt-1 text-lg font-bold text-gray-900 dark:text-white">Showcase: Redesigning our community platform with Glassmorphism</h2>
-                                        <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                            <p>Sharing my team's redesign of our internal community platform using glassmorphism and subtle animations. We focused on reducing cognitive load while maintaining visual interest. Would love feedback on the new UI patterns...</p>
-                                        </div>
-                                        <div class="mt-4 flex flex-wrap gap-2">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                UI/UX
-                                            </span>
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                Design Systems
-                                            </span>
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                                Glassmorphism
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-4 flex items-center justify-between">
-                                    <div class="flex space-x-5">
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-primary-start">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                                </svg>
-                                                <span>18</span>
-                                            </button>
-                                        </span>
-                                        <span class="inline-flex items-center text-sm">
-                                            <button class="inline-flex space-x-1.5 text-gray-400 hover:text-red-500">
-                                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 
+    <script>
+        const root = document.documentElement;
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggleBtn = document.querySelector('#theme-toggle, #theme-toggle-btn');
+            const applyTheme = (mode) => {
+                if(mode === 'dark') { root.classList.add('dark'); }
+                else { root.classList.remove('dark'); }
+            };
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    const newTheme = root.classList.contains('dark') ? 'light' : 'dark';
+                    localStorage.setItem('theme', newTheme);
+                    applyTheme(newTheme);
+                });
+            }
+        });
+
+        async function toggleLike(threadId, button) {
+            if (button.disabled) return;
+            button.disabled = true;
+            
+            const countSpan = button.querySelector('.like-count');
+            const heartIcon = button.querySelector('svg');
+            const wasLiked = button.classList.contains('text-red-500');
+            
+            if (wasLiked) {
+                button.classList.remove('text-red-500', 'liked');
+                heartIcon.setAttribute('fill', 'none');
+                countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
+            } else {
+                button.classList.add('text-red-500', 'liked');
+                heartIcon.setAttribute('fill', 'currentColor');
+                countSpan.textContent = parseInt(countSpan.textContent) + 1;
+            }
+            
+            try {
+                const response = await fetch(`/u/${threadId}/like-toggle/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const data = await response.json();
+                if (data.ok) {
+                    countSpan.textContent = data.likes;
+                    showNotification(wasLiked ? 'Like removed' : 'Liked!', 'success');
+                } else { throw new Error('Server error'); }
+            } catch (error) {
+                if (wasLiked) { button.classList.add('text-red-500', 'liked'); heartIcon.setAttribute('fill', 'currentColor'); countSpan.textContent = parseInt(countSpan.textContent) + 1; }
+                else { button.classList.remove('text-red-500', 'liked'); heartIcon.setAttribute('fill', 'none'); countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1); }
+                showNotification('Error updating like.', 'error');
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        async function toggleSave(threadId, button) {
+            if (button.disabled) return;
+            button.disabled = true;
+            const bookmarkIcon = button.querySelector('svg');
+            const wasSaved = button.classList.contains('text-yellow-500');
+            if (wasSaved) { button.classList.remove('text-yellow-500', 'saved'); bookmarkIcon.setAttribute('fill', 'none'); }
+            else { button.classList.add('text-yellow-500', 'saved'); bookmarkIcon.setAttribute('fill', 'currentColor'); }
+            try {
+                const response = await fetch(`/u/${threadId}/save-toggle/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                if (!response.ok) { throw new Error('Server error'); }
+                const data = await response.json();
+                if (data.ok) { showNotification(wasSaved ? 'Removed from saved' : 'Saved!', 'success'); }
+            } catch (error) {
+                if (wasSaved) { button.classList.add('text-yellow-500', 'saved'); bookmarkIcon.setAttribute('fill', 'currentColor'); }
+                else { button.classList.remove('text-yellow-500', 'saved'); bookmarkIcon.setAttribute('fill', 'none'); }
+                showNotification('Error updating save.', 'error');
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-20 right-4 z-[100] px-6 py-3 rounded-lg shadow-lg notification-enter ${
+                type === 'success' ? 'bg-green-500 text-white' : 
+                type === 'error' ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'}`;
+            const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+            notification.innerHTML = `<span class="mr-2">${icon}</span>${message}`;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.remove('notification-enter');
+                notification.classList.add('notification-exit');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

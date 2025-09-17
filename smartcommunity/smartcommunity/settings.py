@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
+    'smartcommunity.app',
+
     'django.contrib.sites',
     'channels',
     'allauth',
@@ -68,7 +69,9 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",  
 ]
 
-ROOT_URLCONF = 'smartcommunity.urls'
+# Change these lines
+ROOT_URLCONF = 'smartcommunity.smartcommunity.urls'
+ASGI_APPLICATION = 'smartcommunity.smartcommunity.asgi.application'
 
 TEMPLATES = [
     {
@@ -87,7 +90,7 @@ TEMPLATES = [
 ]
 
 # Channels/ASGI
-ASGI_APPLICATION = 'smartcommunity.asgi.application'
+
 
 
 # Database
@@ -156,7 +159,7 @@ LOGIN_URL = '/signin/'
 
 # External API keys and configuration
 # Read the Hugging Face token from environment to avoid committing secrets
-HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN', '')
+HUGGINGFACE_API_TOKEN = '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'
 
 # In-memory channel layer for development
 CHANNEL_LAYERS = {

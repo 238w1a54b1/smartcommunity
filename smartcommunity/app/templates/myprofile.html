@@ -54,10 +54,10 @@
                 <span class="text-xl font-bold gradient-text">SmartCommunity</span>
             </div>
             <div class="hidden md:flex space-x-6">
-                <a href="#" class="hover:text-indigo-300 transition">Home</a>
-                <a href="#" class="hover:text-indigo-300 transition">Categories</a>
-                <a href="#" class="hover:text-indigo-300 transition">Leaderboard</a>
-                <a href="#" class="hover:text-indigo-300 transition">About</a>
+                <a href="{% url 'home' %}" class="hover:text-indigo-300 transition">Home</a>
+                
+                <a href="{% url 'leaderboard' %}" class="hover:text-indigo-300 transition">Leaderboard</a>
+         
                 <a href="{% url 'signout' %}" class="hover:text-indigo-300 transition">Logout</a>
             </div>
             <button class="md:hidden">

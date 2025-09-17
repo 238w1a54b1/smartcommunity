@@ -48,6 +48,11 @@
 		@keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 		.comment-btn { transition: all .2s ease; }
 		.comment-btn:hover { transform: scale(1.05); }
+		.btn-disabled { opacity: 0.6; cursor: not-allowed; }
+		.notification-enter { animation: slideInRight .3s ease; }
+		@keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+		.notification-exit { animation: slideOutRight .3s ease; }
+		@keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
 		.thread-card { transition: all .3s ease; }
 		.thread-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.1); }
 		.gradient-text { background: linear-gradient(90deg, var(--accent1), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -282,6 +287,11 @@
 									</svg>
 								</button>
 							</div>
+							{% if th.title %}
+							<div class="mb-3">
+								<h2 class="text-xl font-bold text-gray-900 dark:text-white leading-tight">{{ th.title }}</h2>
+							</div>
+							{% endif %}
 							<div class="prose prose-sm max-w-none">
 								<p class="text-[16px] leading-relaxed mb-4">{{ th.content }}</p>
 							</div>
@@ -583,48 +593,118 @@
 
 		// AJAX functions
 		async function toggleLike(threadId, button) {
+			// Prevent multiple clicks
+			if (button.disabled) return;
+			button.disabled = true;
+			
+			const countSpan = button.querySelector('.like-count');
+			const heartIcon = button.querySelector('svg');
+			const wasLiked = button.classList.contains('text-red-500');
+			
+			// Optimistic update
+			if (wasLiked) {
+				button.classList.remove('text-red-500', 'liked');
+				heartIcon.setAttribute('fill', 'none');
+				countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
+			} else {
+				button.classList.add('text-red-500', 'liked');
+				heartIcon.setAttribute('fill', 'currentColor');
+				countSpan.textContent = parseInt(countSpan.textContent) + 1;
+			}
+			
 			try {
 				const response = await fetch(`/u/${threadId}/like-toggle/`, {
 					headers: { 'X-Requested-With': 'XMLHttpRequest' }
 				});
 				const data = await response.json();
 				if (data.ok) {
-					const countSpan = button.querySelector('.like-count');
-					const heartIcon = button.querySelector('svg');
+					// Update with actual count from server
 					countSpan.textContent = data.likes;
 					
-					if (button.classList.contains('text-red-500')) {
-						button.classList.remove('text-red-500', 'liked');
-						heartIcon.setAttribute('fill', 'none');
-					} else {
+					// Show notification
+					const message = wasLiked ? 'Like removed' : 'Liked!';
+					showNotification(message, 'success');
+				} else {
+					// Revert optimistic update on error
+					if (wasLiked) {
 						button.classList.add('text-red-500', 'liked');
 						heartIcon.setAttribute('fill', 'currentColor');
+						countSpan.textContent = parseInt(countSpan.textContent) + 1;
+					} else {
+						button.classList.remove('text-red-500', 'liked');
+						heartIcon.setAttribute('fill', 'none');
+						countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
 					}
+					showNotification('Error updating like. Please try again.', 'error');
 				}
 			} catch (error) {
 				console.error('Error toggling like:', error);
+				// Revert optimistic update on error
+				if (wasLiked) {
+					button.classList.add('text-red-500', 'liked');
+					heartIcon.setAttribute('fill', 'currentColor');
+					countSpan.textContent = parseInt(countSpan.textContent) + 1;
+				} else {
+					button.classList.remove('text-red-500', 'liked');
+					heartIcon.setAttribute('fill', 'none');
+					countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
+				}
+				showNotification('Error updating like. Please try again.', 'error');
+			} finally {
+				button.disabled = false;
 			}
 		}
 
 		async function toggleSave(threadId, button) {
+			// Prevent multiple clicks
+			if (button.disabled) return;
+			button.disabled = true;
+			
+			const bookmarkIcon = button.querySelector('svg');
+			const wasSaved = button.classList.contains('text-yellow-500');
+			
+			// Optimistic update
+			if (wasSaved) {
+				button.classList.remove('text-yellow-500', 'saved');
+				bookmarkIcon.setAttribute('fill', 'none');
+			} else {
+				button.classList.add('text-yellow-500', 'saved');
+				bookmarkIcon.setAttribute('fill', 'currentColor');
+			}
+			
 			try {
 				const response = await fetch(`/u/${threadId}/save-toggle/`, {
 					headers: { 'X-Requested-With': 'XMLHttpRequest' }
 				});
 				const data = await response.json();
 				if (data.ok) {
-					const bookmarkIcon = button.querySelector('svg');
-					
-					if (button.classList.contains('text-yellow-500')) {
-						button.classList.remove('text-yellow-500', 'saved');
-						bookmarkIcon.setAttribute('fill', 'none');
-					} else {
+					// Show notification
+					const message = wasSaved ? 'Removed from saved' : 'Saved to your collection!';
+					showNotification(message, 'success');
+				} else {
+					// Revert optimistic update on error
+					if (wasSaved) {
 						button.classList.add('text-yellow-500', 'saved');
 						bookmarkIcon.setAttribute('fill', 'currentColor');
+					} else {
+						button.classList.remove('text-yellow-500', 'saved');
+						bookmarkIcon.setAttribute('fill', 'none');
 					}
+					showNotification('Error updating save. Please try again.', 'error');
 				}
 			} catch (error) {
 				console.error('Error toggling save:', error);
+				// Revert optimistic update on error
+				if (wasSaved) {
+					button.classList.add('text-yellow-500', 'saved');
+					bookmarkIcon.setAttribute('fill', 'currentColor');
+				} else {
+					button.classList.remove('text-yellow-500', 'saved');
+					bookmarkIcon.setAttribute('fill', 'none');
+				}
+				showNotification('Error updating save. Please try again.', 'error');
+			} finally {
+				button.disabled = false;
 			}
 		}
 
@@ -639,6 +719,12 @@
 			const content = form.querySelector('textarea[name="content"]').value.trim();
 			if (!content) return;
 
+			// Show loading state
+			const submitBtn = form.querySelector('button[type="submit"]');
+			const originalText = submitBtn.innerHTML;
+			submitBtn.innerHTML = '<svg class="animate-spin h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Posting...';
+			submitBtn.disabled = true;
+
 			try {
 				const response = await fetch(`/u/${threadId}/comment/`, {
 					method: 'POST',
@@ -650,13 +736,57 @@
 				});
 				
 				if (response.ok) {
-					// Clear form and refresh comments
+					// Clear form
 					form.querySelector('textarea[name="content"]').value = '';
-					location.reload(); // Simple refresh for now
+					
+					// Update comment count
+					const commentCountSpan = document.querySelector(`[data-thread-id="${threadId}"] .comment-count`);
+					if (commentCountSpan) {
+						const currentCount = parseInt(commentCountSpan.textContent) || 0;
+						commentCountSpan.textContent = currentCount + 1;
+					}
+					
+					// Show success message
+					showNotification('Comment posted successfully!', 'success');
+					
+					// Refresh the comments section to show the new comment
+					setTimeout(() => {
+						location.reload();
+					}, 1000);
+				} else {
+					const data = await response.json();
+					showNotification(data.error || 'Error posting comment', 'error');
 				}
 			} catch (error) {
 				console.error('Error submitting comment:', error);
+				showNotification('Error posting comment. Please try again.', 'error');
+			} finally {
+				// Reset button state
+				submitBtn.innerHTML = originalText;
+				submitBtn.disabled = false;
 			}
+		}
+
+		// Notification function
+		function showNotification(message, type = 'info') {
+			const notification = document.createElement('div');
+			notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg notification-enter ${
+				type === 'success' ? 'bg-green-500 text-white' : 
+				type === 'error' ? 'bg-red-500 text-white' : 
+				'bg-blue-500 text-white'
+			}`;
+			
+			// Add icon based on type
+			const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+			notification.innerHTML = `<span class="mr-2">${icon}</span>${message}`;
+			
+			document.body.appendChild(notification);
+			
+			// Auto remove after 3 seconds
+			setTimeout(() => {
+				notification.classList.add('notification-exit');
+				setTimeout(() => notification.remove(), 300);
+			}, 3000);
 		}
 	</script>
 </body>
