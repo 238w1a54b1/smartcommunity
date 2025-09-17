@@ -1,0 +1,70 @@
+
+
+.text-gradient-primary {
+    background: linear-gradient(90deg, #3B82F6 0%, #6366F1 50%, #8B5CF6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.text-gradient-secondary {
+    background: linear-gradient(90deg, #22D3EE 0%, #0EA5E9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bg-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.card-hover {
+    transition: all 0.3s ease;
+}
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2), 0 10px 10px -5px rgba(59, 130, 246, 0.1);
+}
+.speech-bubble {
+    position: relative;
+    border-radius: 0.75rem;
+}
+.speech-bubble:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-right-color: #F3F4F6;
+    border-left: 0;
+    border-top: 0;
+    margin-top: -5px;
+    margin-left: -10px;
+}
+.dark .speech-bubble:after {
+    border-right-color: #1F2937;
+}
+/* Animation classes */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+@keyframes slideIn {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.animate-bounce { animation: bounce 1.5s infinite; }
+.animate-slide-in { animation: slideIn 0.5s ease-out forwards; }
+/* Progress ring */
+.progress-ring {
+    transform: rotate(-90deg);
+}
+.progress-ring-circle {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 0.5s;
+}
