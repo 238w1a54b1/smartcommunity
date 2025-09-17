@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
+import dj_database_url
 from pathlib import Path
 import os
 import pymysql
@@ -159,8 +160,12 @@ LOGIN_URL = '/signin/'
 
 # External API keys and configuration
 # Read the Hugging Face token from environment to avoid committing secrets
-HUGGINGFACE_API_TOKEN = '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'
+# ADD THIS LINE IN ITS PLACE
+SECRET_KEY = os.environ.get('SECRET_KEY')
+# AFTER (SECURE)
+import os # Make sure os is imported at the top of your file
 
+HUGGINGFACE_API_TOKEN = os.environ.get('HUGGINGFACE_API_TOKEN')
 # In-memory channel layer for development
 CHANNEL_LAYERS = {
     'default': {
